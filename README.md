@@ -183,3 +183,191 @@ streamlit run app.py
 PersianRAG نمونه‌ای از کاربرد معماری RAG برای پرسش‌وپاسخ روی اسناد است. این پروژه از embedding چندزبانه، جست‌وجوی برداری، مدل زبانی محلی و رابط کاربری وب استفاده می‌کند.
 
 برای ارزیابی پژوهشی پروژه، پیشنهاد می‌شود کیفیت بازیابی اطلاعات، صحت پاسخ‌ها، کیفیت پاسخ‌گویی به پرسش‌های فارسی و عملکرد سامانه با مجموعه‌ای مشخص از اسناد و پرسش‌های آزمایشی بررسی شود.
+-----------------
+# PersianRAG
+## Persian Intelligent Document Assistant Based on Retrieval-Augmented Generation (RAG)
+
+### 1. Project Overview
+
+PersianRAG is an intelligent document-based question-answering assistant. Users can upload PDF, TXT, and DOCX files and ask questions about their contents.
+
+The system uses **Retrieval-Augmented Generation (RAG)** architecture. First, relevant passages are retrieved from the uploaded documents. These passages are then provided to a language model along with the user's question to generate a context-aware response.
+
+The main objective of this project is to provide an efficient way to search and retrieve information from documents while displaying the sources used to generate each answer.
+
+### 2. Key Features
+
+- Supports PDF, TXT, and DOCX file formats.
+- Extracts text and divides it into smaller sections (chunking).
+- Converts text into vector embeddings using the multilingual `paraphrase-multilingual-MiniLM-L12-v2` model.
+- Performs vector similarity search using FAISS.
+- Generates responses using the locally running `llama3.2` language model through Ollama.
+- Displays retrieved document passages as answer sources.
+- Stores conversation history in an SQLite database.
+- Allows users to configure the number of retrieved chunks through the user interface.
+
+### 3. Technologies Used
+
+- **Python:** Main programming language.
+- **Streamlit:** Web-based user interface development.
+- **Ollama:** Local execution of large language models.
+- **Llama 3.2:** Response generation.
+- **Sentence Transformers:** Text embedding generation.
+- **FAISS:** Vector similarity search.
+- **SQLite:** Conversation history storage.
+- **PyPDF:** PDF text extraction.
+- **python-docx:** Reading Microsoft Word documents.
+- **LangChain Ollama:** Connecting the Python application to Ollama.
+
+### 4. Project Structure
+
+The recommended project directory structure is as follows:
+
+```text
+PersianRAG/
+├── app.py
+├── requirements.txt
+├── README.md
+├── .streamlit/
+│   └── config.toml
+└── documents/
+    └── (Optional sample documents)
+```
+
+**Note:** The virtual environment directory (`.venv`) and the database file (`chat_history.db`) should generally not be included when sharing the project. The database may contain personal conversation history.
+
+### 5. Prerequisites
+
+The following components are required to run the project:
+
+1. Python compatible with the project's dependencies.
+2. Ollama installed on the system.
+3. The `llama3.2` language model downloaded.
+4. Required Python dependencies installed.
+
+After installing Ollama, run the following command in Command Prompt or a terminal:
+
+```bash
+ollama pull llama3.2
+```
+
+To check the installed models:
+
+```bash
+ollama list
+```
+
+Ollama must be running while the application is in use.
+
+### 6. Installing Dependencies
+
+First, navigate to the main project directory:
+
+```cmd
+cd /d C:\Users\ALIENWARE\Documents\PersianRAG
+```
+
+Create and activate a virtual environment:
+
+```cmd
+py -m venv .venv
+.venv\Scripts\activate
+```
+
+Then install the project dependencies:
+
+```bash
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+The `requirements.txt` file should contain the libraries required by the project. For example:
+
+```text
+streamlit
+sentence-transformers
+faiss-cpu
+pypdf
+python-docx
+langchain-ollama
+```
+
+For reproducible installation on other computers, it is recommended to specify the tested versions of each library in this file.
+
+### 7. Running the Application
+
+After installing the dependencies and activating the virtual environment, execute the following command from the project directory:
+
+```bash
+streamlit run app.py
+```
+
+The application will usually open automatically in the default web browser. Otherwise, copy the local URL displayed in the terminal and open it in your browser.
+
+### 8. How to Use
+
+1. Launch the application.
+2. Upload the desired PDF, TXT, or DOCX files using the sidebar.
+3. Enter your question in the chat input field.
+4. The system retrieves document passages relevant to the question.
+5. The language model generates a response using the question and retrieved document content.
+6. If sources are displayed, review the file names and retrieved passages used to generate the response.
+7. Adjust the **Number of Retrieved Chunks** setting to control how many document passages are provided to the language model.
+
+### 9. System Architecture
+
+The application's main workflow consists of the following stages:
+
+1. **Document Upload:** Receives files from the user.
+2. **Text Extraction:** Extracts textual content from uploaded documents.
+3. **Text Chunking:** Divides extracted text into smaller, overlapping sections.
+4. **Embedding Generation:** Converts each text chunk into a numerical vector representation.
+5. **FAISS Indexing:** Organizes the generated vectors for efficient similarity search.
+6. **Information Retrieval:** Identifies document passages relevant to the user's question.
+7. **Response Generation:** Sends the user's question and retrieved passages to the language model.
+8. **Answer Presentation:** Displays the generated response and its retrieved sources.
+
+### 10. Limitations
+
+- The system depends on extractable text. Scanned PDF documents may require Optical Character Recognition (OCR).
+- Displaying retrieved sources does not guarantee that the generated answer is entirely accurate.
+- The language model may generate incomplete or incorrect responses. Important answers should therefore be verified against the original documents.
+- Response quality depends on document quality, the relevance of retrieved passages, the user's question, and the capabilities of the language model.
+- The embedding model may need to be downloaded during the first execution.
+- Processing speed depends on hardware specifications, document size, and the number of retrieved chunks.
+
+### 11. Privacy and Data Storage
+
+Conversation history is stored in an SQLite database. Uploaded documents may also be stored locally in the project directory.
+
+Before sharing the project, check for database files, personal documents, and confidential information.
+
+The language model runs locally through Ollama. However, downloading the models and installing the required dependencies may require an internet connection.
+
+### 12. Basic Troubleshooting
+
+**Ollama Connection Error:**
+
+Make sure Ollama is installed and running. Verify that `llama3.2` appears in the output of:
+
+```bash
+ollama list
+```
+
+**PDF Text Extraction Failure:**
+
+The PDF may be scanned or may not contain an extractable text layer.
+
+**Irrelevant Responses:**
+
+Try rephrasing the question, checking the extracted document text, or adjusting the number of retrieved chunks.
+
+**Python Dependency Installation Errors:**
+
+Make sure the virtual environment is activated and that the installation command is executed from the directory containing `requirements.txt`.
+
+### 13. Conclusion
+
+PersianRAG demonstrates the application of Retrieval-Augmented Generation (RAG) architecture for document-based question answering. The project combines multilingual text embeddings, vector similarity search, a locally hosted language model, and a web-based user interface.
+
+For research-oriented evaluation, it is recommended to assess information retrieval quality, answer accuracy, Persian-language response quality, and overall system performance using a predefined collection of documents and test questions.
